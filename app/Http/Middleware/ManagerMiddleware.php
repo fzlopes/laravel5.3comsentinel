@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Sentinel;
 
-class VisitorsMiddleware
+class ManagerMiddleware
 {
     /**
      * Handle an incoming request.
@@ -16,9 +16,10 @@ class VisitorsMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if(!Sentinel::check())
-        return $next($request);
-        else
+        if(Sentinel::check() && Sentinel::getUser()->roles()->first()->slug == 'manager') {
+            return $next($request);
+        } else {
             return redirect('/');
+        }
     }
 }
