@@ -1,4 +1,4 @@
-# Ecommerce de livros com Laravel 5.3
+# Projeto Laravel 5.3 com sentinel
 
 ## Passos para utilizar
 
