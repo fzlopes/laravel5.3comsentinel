@@ -1,4 +1,5 @@
 Total earnings 99999
+
 <form action="/logout" method="post" id="logout-form">
 	{{ csrf_field() }}
 
