@@ -14,7 +14,7 @@ class LoginController extends Controller
 
     public function postLogin(Request $request)
     {
-    	Sentinel::authenticate($request->all());
+    	if(Sentinel::authenticate($request->all())) {
 
         $slug = Sentinel::getUser()->roles()->first()->slug;
 
@@ -22,7 +22,10 @@ class LoginController extends Controller
             return redirect('/earnings');
         elseif($slug == 'manager')
             return redirect('/tasks');
+    } else {
+        return redirect()->back()->with(['error' => 'Wrong credentials.']);
     }
+  }
 
     public function logout()
     {
