@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Sentinel;
+use Cartalyst\Sentinel\Checkpoints\ThrottlingException;
+use Cartalyst\Sentinel\Checkpoints\NotActivatedException;
+
 
 class LoginController extends Controller
 {
@@ -14,6 +17,7 @@ class LoginController extends Controller
 
     public function postLogin(Request $request)
     {
+        try {
     	if(Sentinel::authenticate($request->all())) {
 
         $slug = Sentinel::getUser()->roles()->first()->slug;
@@ -22,9 +26,19 @@ class LoginController extends Controller
             return redirect('/earnings');
         elseif($slug == 'manager')
             return redirect('/tasks');
-    } else {
-        return redirect()->back()->with(['error' => 'Wrong credentials.']);
-    }
+         } else {
+            return redirect()->back()->with(['error' => 'Wrong credentials.']);
+        }
+      } catch (ThrottlingException $e) {
+            $delay = $e->getDelay();
+
+             return redirect()->back()->with(['error' => 'Your are banned for $delay seconds.']);
+
+      }
+
+       } catch (NotActivatedException $e) {
+            return redirect()->back()->with(['error' => 'Your account is not activated.']);
+       }
   }
 
     public function logout()
